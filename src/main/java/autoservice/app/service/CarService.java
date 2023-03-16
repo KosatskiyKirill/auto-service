@@ -1,7 +1,6 @@
 package autoservice.app.service;
 
 import autoservice.app.model.Car;
-
 import java.util.Optional;
 
 public interface CarService {

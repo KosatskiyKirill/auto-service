@@ -1,16 +1,20 @@
 package autoservice.app.controller;
 
-import autoservice.app.dto.OrderDto;
-import autoservice.app.dto.ProductDto;
-import autoservice.app.dto.mapper.impl.MasterMapper;
-import autoservice.app.dto.mapper.impl.OrderMapper;
+import static java.util.stream.Collectors.toList;
+
+import autoservice.app.dto.request.OrderRequestDto;
+import autoservice.app.dto.request.ProductRequestDto;
+import autoservice.app.dto.response.OrderResponseDto;
 import autoservice.app.model.Order;
 import autoservice.app.model.enums.StatusOrder;
+import autoservice.app.service.CarOwnerService;
+import autoservice.app.service.CarService;
+import autoservice.app.service.MasterService;
 import autoservice.app.service.OrderService;
-import autoservice.app.dto.mapper.impl.CarMapper;
-import autoservice.app.dto.mapper.impl.CarOwnerMapper;
-import autoservice.app.dto.mapper.impl.ProductMapper;
-import autoservice.app.dto.mapper.impl.ServiceMapper;
+import autoservice.app.service.mapper.OrderMapper;
+import autoservice.app.service.mapper.ProductMapper;
+import autoservice.app.service.mapper.ServiceMapper;
+import java.math.BigDecimal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,40 +24,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static java.util.stream.Collectors.toList;
-
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
     private final ProductMapper productMapper;
     private final OrderMapper orderMapper;
-    private final CarMapper carMapper;
     private final ServiceMapper serviceMapper;
-    private final CarOwnerMapper carOwnerMapper;
-    private final MasterMapper masterMapper;
+    private final CarService carService;
+    private final MasterService masterService;
+    private final CarOwnerService carOwnerService;
 
     public OrderController(OrderService orderService, ProductMapper productMapper,
-                           OrderMapper orderMapper, CarMapper carMapper, ServiceMapper serviceMapper,
-                           CarOwnerMapper carOwnerMapper, MasterMapper masterMapper) {
+                           OrderMapper orderMapper, ServiceMapper serviceMapper,
+                           CarService carService, MasterService masterService,
+                           CarOwnerService carOwnerService) {
         this.orderService = orderService;
         this.productMapper = productMapper;
         this.orderMapper = orderMapper;
-        this.carMapper = carMapper;
         this.serviceMapper = serviceMapper;
-        this.carOwnerMapper = carOwnerMapper;
-        this.masterMapper = masterMapper;
+        this.carService = carService;
+        this.masterService = masterService;
+        this.carOwnerService = carOwnerService;
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderResponseDto> createOrder(@RequestBody OrderRequestDto orderDto) {
         Order newOrder = orderService.create(orderMapper.toModel(orderDto));
         return ResponseEntity.ok(orderMapper.toDto(newOrder));
     }
 
     @PostMapping("/add-product-to-order/{orderId}")
-    public ResponseEntity<OrderDto> addProductToOrder(@PathVariable Long orderId,
-                                                      @RequestBody ProductDto productDto) {
+    public ResponseEntity<OrderResponseDto> addProductToOrder(@PathVariable Long orderId,
+                                                      @RequestBody ProductRequestDto productDto) {
         return orderService.findById(orderId)
                 .map(o -> {
                     o.getProducts().add(productMapper.toModel(productDto));
@@ -65,13 +68,16 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long orderId,
-                                                @RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderId,
+                                                @RequestBody OrderRequestDto orderDto) {
         return orderService.findById(orderId)
                 .map(o -> {
-                    o.setCars(carMapper.toModel(orderDto.getCarsDto()));
-                    o.setCarOwner(carOwnerMapper.toModel(orderDto.getCarOwnerDto()));
-                    o.setMaster(masterMapper.toModel(orderDto.getMasterDto()));
+                    carService.findById(orderDto.getCarsId())
+                                    .ifPresent(o::setCar);
+                    carOwnerService.findById(orderDto.getCarOwnerId())
+                                    .ifPresent(o::setCarOwner);
+                    masterService.findById(orderDto.getMasterId())
+                                    .ifPresent(o::setMaster);
                     o.setDescriptionProblem(orderDto.getDescriptionProblem());
                     o.setDateOfAcceptance(orderDto.getDateOfAcceptance());
                     o.setStatusOrder(orderDto.getStatusOrder());
@@ -80,7 +86,7 @@ public class OrderController {
                     o.setServices(orderDto.getServices().stream()
                             .map(serviceMapper::toModel)
                             .collect(toList()));
-                    o.setProducts(orderDto.getProductsDto().stream()
+                    o.setProducts(orderDto.getProducts().stream()
                             .map(productMapper::toModel)
                             .collect(toList()));
                     return orderService.update(o);
@@ -90,8 +96,8 @@ public class OrderController {
                 .orElseGet(ResponseEntity.notFound()::build);
     }
 
-    @PutMapping("status-order/update/{orderId}")
-    public ResponseEntity<OrderDto> updateStatusOrder(@PathVariable Long orderId,
+    @PutMapping("status-order/{orderId}")
+    public ResponseEntity<OrderResponseDto> updateStatusOrder(@PathVariable Long orderId,
                                                       @RequestBody StatusOrder statusOrder) {
         return orderService.findById(orderId)
                 .map(o -> {
@@ -104,7 +110,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}/cost")
-    public ResponseEntity<Double> getCostForOrder(@PathVariable Long orderId) {
+    public ResponseEntity<BigDecimal> getCostForOrder(@PathVariable Long orderId) {
         return orderService.findById(orderId)
                 .map(orderService::getCostOrder)
                 .map(ResponseEntity::ok)

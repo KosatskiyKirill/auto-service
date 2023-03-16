@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import java.util.List;
 
 @Entity
@@ -25,7 +24,7 @@ public class Car {
     @ManyToOne
     @JoinColumn(name = "car_owner_id")
     private CarOwner carOwner;
-    @OneToMany(mappedBy = "cars")
+    @OneToMany(mappedBy = "car")
     private List<Order> orders;
 
     public Long getId() {

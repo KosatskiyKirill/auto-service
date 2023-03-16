@@ -1,22 +1,22 @@
-package autoservice.app.dto;
+package autoservice.app.dto.response;
 
 import autoservice.app.model.enums.StatusOrder;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public class OrderDto {
+public class OrderResponseDto {
     private Long id;
-    private CarDto cars;
+    private Long carsId;
     private String descriptionProblem;
     private LocalDate dateOfAcceptance;
-    private List<ServiceDto> services;
-    private List<ProductDto> products;
+    private List<ServiceResponseDto> services;
+    private List<ProductResponseDto> products;
     private StatusOrder statusOrder;
-    private double finalCost;
+    private BigDecimal finalCost;
     private LocalDate endDate;
-    private CarOwnerDto carOwner;
-    private MasterDto master;
+    private Long carOwnerId;
+    private Long masterId;
 
     public Long getId() {
         return id;
@@ -26,12 +26,12 @@ public class OrderDto {
         this.id = id;
     }
 
-    public CarDto getCarsDto() {
-        return cars;
+    public Long getCarsId() {
+        return carsId;
     }
 
-    public void setCarsDto(CarDto cars) {
-        this.cars = cars;
+    public void setCarsId(Long carsId) {
+        this.carsId = carsId;
     }
 
     public String getDescriptionProblem() {
@@ -50,19 +50,19 @@ public class OrderDto {
         this.dateOfAcceptance = dateOfAcceptance;
     }
 
-    public List<ServiceDto> getServices() {
+    public List<ServiceResponseDto> getServices() {
         return services;
     }
 
-    public void setServicesDto(List<ServiceDto> services) {
+    public void setServices(List<ServiceResponseDto> services) {
         this.services = services;
     }
 
-    public List<ProductDto> getProductsDto() {
+    public List<ProductResponseDto> getProducts() {
         return products;
     }
 
-    public void setProductsDto(List<ProductDto> products) {
+    public void setProducts(List<ProductResponseDto> products) {
         this.products = products;
     }
 
@@ -74,11 +74,11 @@ public class OrderDto {
         this.statusOrder = statusOrder;
     }
 
-    public double getFinalCost() {
+    public BigDecimal getFinalCost() {
         return finalCost;
     }
 
-    public void setFinalCost(double finalCost) {
+    public void setFinalCost(BigDecimal finalCost) {
         this.finalCost = finalCost;
     }
 
@@ -90,19 +90,19 @@ public class OrderDto {
         this.endDate = endDate;
     }
 
-    public CarOwnerDto getCarOwnerDto() {
-        return carOwner;
+    public Long getCarOwnerId() {
+        return carOwnerId;
     }
 
-    public void setCarOwnerDto(CarOwnerDto carOwner) {
-        this.carOwner = carOwner;
+    public void setCarOwnerId(Long carOwnerId) {
+        this.carOwnerId = carOwnerId;
     }
 
-    public MasterDto getMasterDto() {
-        return master;
+    public Long getMasterId() {
+        return masterId;
     }
 
-    public void setMasterDto(MasterDto master) {
-        this.master = master;
+    public void setMasterId(Long masterId) {
+        this.masterId = masterId;
     }
 }

@@ -3,9 +3,8 @@ package autoservice.app.service.impl;
 import autoservice.app.dao.CarOwnerDao;
 import autoservice.app.model.CarOwner;
 import autoservice.app.service.CarOwnerService;
-import org.springframework.stereotype.Service;
-
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CarOwnerServiceImpl implements CarOwnerService {

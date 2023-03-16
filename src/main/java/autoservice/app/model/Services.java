@@ -1,15 +1,16 @@
 package autoservice.app.model;
 
+import autoservice.app.model.enums.StatusService;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import autoservice.app.model.enums.StatusService;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "service")
@@ -23,7 +24,7 @@ public class Services {
     @ManyToOne
     @JoinColumn(name = "master_id")
     private Master master;
-    private double cost;
+    private BigDecimal cost;
     @Enumerated(EnumType.STRING)
     private StatusService status;
 
@@ -51,11 +52,11 @@ public class Services {
         this.master = master;
     }
 
-    public double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 

@@ -1,15 +1,16 @@
 package autoservice.app.service.impl;
 
+import autoservice.app.dao.ServiceDao;
 import autoservice.app.model.Services;
 import autoservice.app.model.enums.StatusService;
-import autoservice.app.dao.ServiceDao;
 import autoservice.app.service.ServiceService;
-import org.springframework.stereotype.Service;
-
+import java.math.BigDecimal;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ServiceServiceImpl implements ServiceService {
+    private static final BigDecimal MASTERS_SALARY = new BigDecimal(0.4);
     private final ServiceDao serviceDao;
 
     public ServiceServiceImpl(ServiceDao serviceDao) {
@@ -17,14 +18,16 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public Double getSalaryForMaster(Long id) {
-        return (serviceDao.getAllByStatusAndMaster_Id(StatusService.NOT_PAID.name(), id).stream()
+    public BigDecimal getSalaryForMaster(Long id) {
+        BigDecimal reduce = serviceDao.getAllByStatusAndMasterId(StatusService.NOT_PAID.name(), id)
+                .stream()
                 .map(s -> {
                     s.setStatus(StatusService.PAID);
                     return serviceDao.save(s);
                 })
-                .mapToDouble(Services::getCost)
-                .sum()) * 0.4;
+                .map(Services::getCost)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return reduce.multiply(MASTERS_SALARY);
     }
 
     @Override

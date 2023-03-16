@@ -1,13 +1,17 @@
 package autoservice.app.controller;
 
-import autoservice.app.dto.CarOwnerDto;
-import autoservice.app.dto.OrderDto;
-import autoservice.app.dto.mapper.impl.CarMapper;
-import autoservice.app.dto.mapper.impl.CarOwnerMapper;
-import autoservice.app.dto.mapper.impl.OrderMapper;
+import static java.util.stream.Collectors.toList;
+
+import autoservice.app.dto.request.CarOwnerRequestDto;
+import autoservice.app.dto.response.CarOwnerResponseDto;
+import autoservice.app.dto.response.OrderResponseDto;
 import autoservice.app.model.CarOwner;
 import autoservice.app.service.CarOwnerService;
 import autoservice.app.service.OrderService;
+import autoservice.app.service.mapper.CarMapper;
+import autoservice.app.service.mapper.CarOwnerMapper;
+import autoservice.app.service.mapper.OrderMapper;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,10 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/car-owners")
@@ -30,8 +30,9 @@ public class CarOwnerController {
     private final OrderService orderService;
     private final OrderMapper orderMapper;
 
-    public CarOwnerController(CarOwnerService carOwnerService, CarOwnerMapper carOwnerMapper,
-                              CarMapper carMapper, OrderService orderService, OrderMapper orderMapper) {
+    public CarOwnerController(CarOwnerService carOwnerService,
+                              CarOwnerMapper carOwnerMapper, CarMapper carMapper,
+                              OrderService orderService, OrderMapper orderMapper) {
         this.carOwnerService = carOwnerService;
         this.carOwnerMapper = carOwnerMapper;
         this.carMapper = carMapper;
@@ -40,14 +41,15 @@ public class CarOwnerController {
     }
 
     @PostMapping
-    public ResponseEntity<CarOwnerDto> createCarOwner(@RequestBody CarOwnerDto carOwnerDto) {
+    public ResponseEntity<CarOwnerResponseDto> createCarOwner(@RequestBody
+                                                                  CarOwnerRequestDto carOwnerDto) {
         CarOwner newCarOwner = carOwnerService.create(carOwnerMapper.toModel(carOwnerDto));
         return ResponseEntity.ok(carOwnerMapper.toDto(newCarOwner));
     }
 
     @PutMapping("/{carOwnerId}")
-    public ResponseEntity<CarOwnerDto> updateCarOwner(@PathVariable Long carOwnerId,
-                                                      @RequestBody CarOwnerDto carOwnerDto) {
+    public ResponseEntity<CarOwnerResponseDto> updateCarOwner(@PathVariable Long carOwnerId,
+                                                      @RequestBody CarOwnerRequestDto carOwnerDto) {
         return carOwnerService.findById(carOwnerId)
                 .map(c -> {
                     c.setCars(carOwnerDto.getCars().stream()
@@ -64,7 +66,8 @@ public class CarOwnerController {
     }
 
     @GetMapping("/{carOwnerId}/orders")
-    public ResponseEntity<List<OrderDto>> getCarOwnersOrders(@PathVariable Long carOwnerId) {
+    public ResponseEntity<List<OrderResponseDto>> getCarOwnersOrders(@PathVariable
+                                                                         Long carOwnerId) {
         return carOwnerService.findById(carOwnerId)
                 .map(c -> orderService.getAllByCarOwnerId(carOwnerId).stream()
                         .map(orderMapper::toDto)

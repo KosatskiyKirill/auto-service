@@ -3,9 +3,8 @@ package autoservice.app.service.impl;
 import autoservice.app.dao.ProductDao;
 import autoservice.app.model.Product;
 import autoservice.app.service.ProductService;
-import org.springframework.stereotype.Service;
-
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ProductServiceImpl implements ProductService {

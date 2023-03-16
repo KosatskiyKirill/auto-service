@@ -1,9 +1,11 @@
-package autoservice.app.dto;
+package autoservice.app.dto.response;
 
-public class ProductDto {
+import java.math.BigDecimal;
+
+public class ProductResponseDto {
     private Long id;
     private String name;
-    private double cost;
+    private BigDecimal cost;
 
     public Long getId() {
         return id;
@@ -21,11 +23,11 @@ public class ProductDto {
         this.name = name;
     }
 
-    public double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 }

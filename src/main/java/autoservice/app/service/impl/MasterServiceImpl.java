@@ -1,11 +1,10 @@
 package autoservice.app.service.impl;
 
-import autoservice.app.model.Master;
 import autoservice.app.dao.MasterDao;
+import autoservice.app.model.Master;
 import autoservice.app.service.MasterService;
-import org.springframework.stereotype.Service;
-
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MasterServiceImpl implements MasterService {

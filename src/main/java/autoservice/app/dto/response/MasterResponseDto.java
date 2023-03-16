@@ -1,6 +1,6 @@
-package autoservice.app.dto;
+package autoservice.app.dto.response;
 
-public class MasterDto {
+public class MasterResponseDto {
     private Long id;
     private String fullName;
 

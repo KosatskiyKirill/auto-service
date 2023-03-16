@@ -1,7 +1,7 @@
 package autoservice.app.service;
 
 import autoservice.app.model.Order;
-
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ public interface OrderService {
 
     Order update(Order order);
 
-    double getCostOrder(Order order);
+    BigDecimal getCostOrder(Order order);
 
     Optional<Order> findById(Long id);
 }

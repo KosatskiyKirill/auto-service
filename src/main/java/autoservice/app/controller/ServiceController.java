@@ -1,11 +1,12 @@
 package autoservice.app.controller;
 
-import autoservice.app.dto.ServiceDto;
-import autoservice.app.dto.mapper.impl.MasterMapper;
-import autoservice.app.dto.mapper.impl.OrderMapper;
-import autoservice.app.dto.mapper.impl.ServiceMapper;
+import autoservice.app.dto.request.ServiceRequestDto;
+import autoservice.app.dto.response.ServiceResponseDto;
 import autoservice.app.model.Services;
+import autoservice.app.service.MasterService;
+import autoservice.app.service.OrderService;
 import autoservice.app.service.ServiceService;
+import autoservice.app.service.mapper.ServiceMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,32 +20,34 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServiceController {
     private final ServiceService service;
     private final ServiceMapper serviceMapper;
-    private final OrderMapper orderMapper;
-    private final MasterMapper masterMapper;
-    private final ServiceDto serviceDto;
+    private final OrderService orderService;
+    private final MasterService masterService;
 
     public ServiceController(ServiceService service, ServiceMapper serviceMapper,
-                             OrderMapper orderMapper, MasterMapper masterMapper, ServiceDto serviceDto) {
+                             OrderService orderService, MasterService masterService) {
         this.service = service;
         this.serviceMapper = serviceMapper;
-        this.orderMapper = orderMapper;
-        this.masterMapper = masterMapper;
-        this.serviceDto = serviceDto;
+        this.orderService = orderService;
+        this.masterService = masterService;
     }
 
     @PostMapping
-    public ResponseEntity<ServiceDto> createService(@RequestBody ServiceDto serviceDto) {
+    public ResponseEntity<ServiceResponseDto> createService(@RequestBody
+                                                                ServiceRequestDto serviceDto) {
         Services newServices = service.create(serviceMapper.toModel(serviceDto));
         return ResponseEntity.ok(serviceMapper.toDto(newServices));
     }
 
     @PutMapping("/{serviceId}")
-    public ResponseEntity<ServiceDto> updateService(@PathVariable Long serviceId,
-                                                    @RequestBody ServiceDto serviceDto) {
+    public ResponseEntity<ServiceResponseDto> updateService(@PathVariable Long serviceId,
+                                                            @RequestBody
+                                                            ServiceRequestDto serviceDto) {
         return service.findById(serviceId)
                 .map(s -> {
-                    s.setOrder(orderMapper.toModel(serviceDto.getOrderDto()));
-                    s.setMaster(masterMapper.toModel(serviceDto.getMasterDto()));
+                    orderService.findById(serviceDto.getOrderId())
+                                    .ifPresent(s::setOrder);
+                    masterService.findById(serviceDto.getMasterId())
+                                    .ifPresent(s::setMaster);
                     s.setCost(serviceDto.getCost());
                     s.setStatus(serviceDto.getStatus());
                     return service.update(s);
@@ -54,9 +57,10 @@ public class ServiceController {
                 .orElseGet(ResponseEntity.notFound()::build);
     }
 
-    @PutMapping("status-service/update/{serviceId}")
-    public ResponseEntity<ServiceDto> updateStatusService(@PathVariable Long serviceId,
-                                                          @RequestBody ServiceDto serviceDto) {
+    @PutMapping("status-service/{serviceId}")
+    public ResponseEntity<ServiceResponseDto> updateStatusService(@PathVariable Long serviceId,
+                                                          @RequestBody
+                                                          ServiceRequestDto serviceDto) {
         return service.findById(serviceId)
                 .map(s -> {
                     s.setStatus(serviceDto.getStatus());

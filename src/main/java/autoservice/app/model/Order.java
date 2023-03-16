@@ -12,7 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class Order {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "car_id")
-    private Car cars;
+    private Car car;
     @Column(name = "description_problem")
     private String descriptionProblem;
     private LocalDate dateOfAcceptance;
@@ -34,7 +34,7 @@ public class Order {
     private List<Product> products;
     @Enumerated(EnumType.STRING)
     private StatusOrder statusOrder;
-    private double finalCost;
+    private BigDecimal finalCost;
     private LocalDate endDate;
     @ManyToOne
     @JoinColumn(name = "car_owner_id")
@@ -51,12 +51,12 @@ public class Order {
         this.id = id;
     }
 
-    public Car getCars() {
-        return cars;
+    public Car getCar() {
+        return car;
     }
 
-    public void setCars(Car cars) {
-        this.cars = cars;
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     public String getDescriptionProblem() {
@@ -99,11 +99,11 @@ public class Order {
         this.statusOrder = statusOrder;
     }
 
-    public double getFinalCost() {
+    public BigDecimal getFinalCost() {
         return finalCost;
     }
 
-    public void setFinalCost(double finalCost) {
+    public void setFinalCost(BigDecimal finalCost) {
         this.finalCost = finalCost;
     }
 

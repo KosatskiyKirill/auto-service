@@ -1,10 +1,11 @@
 package autoservice.app.controller;
 
-import autoservice.app.dto.CarDto;
+import autoservice.app.dto.request.CarRequestDto;
+import autoservice.app.dto.response.CarResponseDto;
 import autoservice.app.model.Car;
-import autoservice.app.dto.mapper.impl.CarMapper;
-import autoservice.app.dto.mapper.impl.CarOwnerMapper;
+import autoservice.app.service.CarOwnerService;
 import autoservice.app.service.CarService;
+import autoservice.app.service.mapper.CarMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,25 +19,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarController {
     private final CarService carService;
     private final CarMapper carMapper;
-    private final CarOwnerMapper carOwnerMapper;
+    private final CarOwnerService carOwnerService;
 
-    public CarController(CarService carService, CarMapper carMapper, CarOwnerMapper carOwnerMapper) {
+    public CarController(CarService carService, CarMapper carMapper,
+                         CarOwnerService carOwnerService) {
         this.carService = carService;
         this.carMapper = carMapper;
-        this.carOwnerMapper = carOwnerMapper;
+        this.carOwnerService = carOwnerService;
     }
 
     @PostMapping
-    public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
+    public ResponseEntity<CarResponseDto> createCar(@RequestBody CarRequestDto carDto) {
         Car newCar = carService.create(carMapper.toModel(carDto));
         return ResponseEntity.ok(carMapper.toDto(newCar));
     }
 
     @PutMapping("/{carId}")
-    public ResponseEntity<CarDto> updateCar(@PathVariable Long carId, @RequestBody CarDto carDto) {
+    public ResponseEntity<CarResponseDto> updateCar(@PathVariable Long carId,
+                                                    @RequestBody CarRequestDto carDto) {
         return carService.findById(carId)
                 .map(c -> {
-                    c.setCarOwner(carOwnerMapper.toModel(carDto.getCarOwnerDto()));
+                    carOwnerService.findById(carDto.getCarOwnerId())
+                                    .ifPresent(c::setCarOwner);
                     c.setBrand(carDto.getBrand());
                     c.setCarNumber(carDto.getCarNumber());
                     c.setModel(carDto.getModel());

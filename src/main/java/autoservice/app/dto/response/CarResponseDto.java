@@ -1,11 +1,11 @@
-package autoservice.app.dto;
+package autoservice.app.dto.response;
 
-public class CarDto {
+public class CarResponseDto {
     private Long id;
     private String brand;
     private String model;
     private String carNumber;
-    private CarOwnerDto carOwnerDto;
+    private Long carOwnerId;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class CarDto {
         this.carNumber = carNumber;
     }
 
-    public CarOwnerDto getCarOwnerDto() {
-        return carOwnerDto;
+    public Long getCarOwnerId() {
+        return carOwnerId;
     }
 
-    public void setCarOwnerDto(CarOwnerDto carOwnerDto) {
-        this.carOwnerDto = carOwnerDto;
+    public void setCarOwnerId(Long carOwnerId) {
+        this.carOwnerId = carOwnerId;
     }
 }

@@ -1,11 +1,11 @@
 package autoservice.app.service;
 
 import autoservice.app.model.Services;
-
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface ServiceService {
-    Double getSalaryForMaster(Long id);
+    BigDecimal getSalaryForMaster(Long id);
 
     Services create(Services services);
 

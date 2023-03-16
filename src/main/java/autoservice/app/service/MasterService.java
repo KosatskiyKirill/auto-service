@@ -1,7 +1,6 @@
 package autoservice.app.service;
 
 import autoservice.app.model.Master;
-
 import java.util.Optional;
 
 public interface MasterService {

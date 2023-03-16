@@ -1,9 +1,10 @@
 package autoservice.app.controller;
 
-import autoservice.app.dto.ProductDto;
-import autoservice.app.dto.mapper.impl.ProductMapper;
+import autoservice.app.dto.request.ProductRequestDto;
+import autoservice.app.dto.response.ProductResponseDto;
 import autoservice.app.model.Product;
 import autoservice.app.service.ProductService;
+import autoservice.app.service.mapper.ProductMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +25,15 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody
+                                                                ProductRequestDto productDto) {
         Product newProduct = productService.create(productMapper.toModel(productDto));
         return ResponseEntity.ok(productMapper.toDto(newProduct));
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId,
-                                                    @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long productId,
+                                                    @RequestBody ProductRequestDto productDto) {
         return productService.findById(productId)
                 .map(p -> {
                     p.setName(productDto.getName());

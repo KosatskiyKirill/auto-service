@@ -19,7 +19,7 @@ public class Master {
     @OneToMany(mappedBy = "master")
     private List<Order> completedOrders = new ArrayList<>();
     @OneToMany(mappedBy = "master")
-    private List<Services> services = new ArrayList<>();
+    private List<Service> services = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -45,11 +45,11 @@ public class Master {
         this.completedOrders = completedOrders;
     }
 
-    public List<Services> getServices() {
+    public List<Service> getServices() {
         return services;
     }
 
-    public void setServices(List<Services> services) {
+    public void setServices(List<Service> services) {
         this.services = services;
     }
 }

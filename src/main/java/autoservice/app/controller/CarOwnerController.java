@@ -68,11 +68,8 @@ public class CarOwnerController {
     @GetMapping("/{carOwnerId}/orders")
     public ResponseEntity<List<OrderResponseDto>> getCarOwnersOrders(@PathVariable
                                                                          Long carOwnerId) {
-        return carOwnerService.findById(carOwnerId)
-                .map(c -> orderService.getAllByCarOwnerId(carOwnerId).stream()
-                        .map(orderMapper::toDto)
-                        .collect(toList()))
-                .map(ResponseEntity::ok)
-                .orElseGet(ResponseEntity.notFound()::build);
+        List<OrderResponseDto> orders = orderService.getAllByCarOwnerId(carOwnerId).stream()
+                .map(orderMapper::toDto).toList();
+        return ResponseEntity.ok(orders);
     }
 }

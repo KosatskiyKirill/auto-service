@@ -2,7 +2,7 @@ package autoservice.app.controller;
 
 import autoservice.app.dto.request.ServiceRequestDto;
 import autoservice.app.dto.response.ServiceResponseDto;
-import autoservice.app.model.Services;
+import autoservice.app.model.Service;
 import autoservice.app.service.MasterService;
 import autoservice.app.service.OrderService;
 import autoservice.app.service.ServiceService;
@@ -34,8 +34,8 @@ public class ServiceController {
     @PostMapping
     public ResponseEntity<ServiceResponseDto> createService(@RequestBody
                                                                 ServiceRequestDto serviceDto) {
-        Services newServices = service.create(serviceMapper.toModel(serviceDto));
-        return ResponseEntity.ok(serviceMapper.toDto(newServices));
+        Service newService = service.create(serviceMapper.toModel(serviceDto));
+        return ResponseEntity.ok(serviceMapper.toDto(newService));
     }
 
     @PutMapping("/{serviceId}")

@@ -1,7 +1,5 @@
 package autoservice.app.controller;
 
-import static java.util.stream.Collectors.toList;
-
 import autoservice.app.dto.request.MasterRequestDto;
 import autoservice.app.dto.response.MasterResponseDto;
 import autoservice.app.dto.response.OrderResponseDto;
@@ -62,12 +60,9 @@ public class MasterController {
 
     @GetMapping("/{masterId}/orders")
     public ResponseEntity<List<OrderResponseDto>> getMastersOrders(@PathVariable Long masterId) {
-        return masterService.findById(masterId)
-                .map(m -> orderService.getAllByMasterId(masterId).stream()
-                       .map(orderMapper::toDto)
-                       .collect(toList()))
-                .map(ResponseEntity::ok)
-                .orElseGet(ResponseEntity.notFound()::build);
+        List<OrderResponseDto> orders = orderService.getAllByMasterId(masterId).stream()
+                .map(orderMapper::toDto).toList();
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{masterId}/salary")

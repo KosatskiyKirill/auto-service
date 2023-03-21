@@ -10,5 +10,4 @@ public interface OrderDao extends JpaRepository<Order, Long> {
     List<Order> getAllByMasterId(Long id);
 
     List<Order> getAllByCarOwnerId(Long id);
-
 }

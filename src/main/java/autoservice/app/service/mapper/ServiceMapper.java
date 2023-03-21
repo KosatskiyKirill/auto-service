@@ -2,7 +2,7 @@ package autoservice.app.service.mapper;
 
 import autoservice.app.dto.request.ServiceRequestDto;
 import autoservice.app.dto.response.ServiceResponseDto;
-import autoservice.app.model.Services;
+import autoservice.app.model.Service;
 import autoservice.app.service.MasterService;
 import autoservice.app.service.OrderService;
 import org.springframework.stereotype.Component;
@@ -17,18 +17,18 @@ public class ServiceMapper {
         this.masterService = masterService;
     }
 
-    public ServiceResponseDto toDto(Services services) {
+    public ServiceResponseDto toDto(Service service) {
         ServiceResponseDto serviceDto = new ServiceResponseDto();
-        serviceDto.setId(services.getId());
-        serviceDto.setCost(services.getCost());
-        serviceDto.setMasterId(services.getMaster().getId());
-        serviceDto.setOrderId(services.getOrder().getId());
-        serviceDto.setStatus(services.getStatus());
+        serviceDto.setId(service.getId());
+        serviceDto.setCost(service.getCost());
+        serviceDto.setMasterId(service.getMaster().getId());
+        serviceDto.setOrderId(service.getOrder().getId());
+        serviceDto.setStatus(service.getStatus());
         return serviceDto;
     }
 
-    public Services toModel(ServiceRequestDto serviceDto) {
-        Services service = new Services();
+    public Service toModel(ServiceRequestDto serviceDto) {
+        Service service = new Service();
         service.setCost(serviceDto.getCost());
         service.setStatus(serviceDto.getStatus());
         orderService.findById(serviceDto.getOrderId())

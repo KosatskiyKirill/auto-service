@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Order {
     private String descriptionProblem;
     private LocalDate dateOfAcceptance;
     @OneToMany(mappedBy = "order")
-    private List<Services> services;
+    private List<Service> services;
     @OneToMany(mappedBy = "order")
     private List<Product> products;
     @Enumerated(EnumType.STRING)
@@ -75,11 +75,11 @@ public class Order {
         this.dateOfAcceptance = dateOfAcceptance;
     }
 
-    public List<Services> getServices() {
+    public List<Service> getServices() {
         return services;
     }
 
-    public void setServices(List<Services> services) {
+    public void setServices(List<Service> services) {
         this.services = services;
     }
 

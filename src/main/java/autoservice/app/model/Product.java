@@ -18,7 +18,7 @@ public class Product {
     private String name;
     private BigDecimal cost;
     @ManyToOne
-    @JoinColumn(name = "products")
+    @JoinColumn(name = "order_id")
     private Order order;
 
     public Long getId() {
@@ -43,5 +43,13 @@ public class Product {
 
     public void setCost(BigDecimal cost) {
         this.cost = cost;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

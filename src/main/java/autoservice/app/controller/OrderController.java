@@ -96,7 +96,7 @@ public class OrderController {
                 .orElseGet(ResponseEntity.notFound()::build);
     }
 
-    @PutMapping("status-order/{orderId}")
+    @PutMapping("/status-order/{orderId}")
     public ResponseEntity<OrderResponseDto> updateStatusOrder(@PathVariable Long orderId,
                                                       @RequestBody StatusOrder statusOrder) {
         return orderService.findById(orderId)

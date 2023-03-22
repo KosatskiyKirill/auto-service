@@ -20,7 +20,6 @@ public class OrderServiceImpl implements OrderService {
     private static final BigDecimal ZERO_VALUE = new BigDecimal(0);
     private static final String DIAGNOSTIC_SERVICE_NAME = "diagnostic";
     private final OrderDao orderDao;
-
     private final ServiceDao serviceDao;
 
     public OrderServiceImpl(OrderDao orderDao, ServiceDao serviceDao) {

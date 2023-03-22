@@ -1,6 +1,7 @@
 package autoservice.app.service.impl;
 
 import autoservice.app.dao.OrderDao;
+import autoservice.app.dao.ServiceDao;
 import autoservice.app.model.Order;
 import autoservice.app.model.Product;
 import autoservice.app.model.Service;
@@ -16,13 +17,15 @@ public class OrderServiceImpl implements OrderService {
 
     private static final BigDecimal SERVICE_DISCOUNT = new BigDecimal(0.02);
     private static final BigDecimal PRODUCT_DISCOUNT = new BigDecimal(0.01);
-    private static final BigDecimal DIAGNOSTIC = new BigDecimal(500);
-    private static final BigDecimal DIAGNOSTIC_DISCAUNT = new BigDecimal(-500);
     private static final BigDecimal ZERO_VALUE = new BigDecimal(0);
+    private static final String DIAGNOSTIC_SERVICE_NAME = "diagnostic";
     private final OrderDao orderDao;
 
-    public OrderServiceImpl(OrderDao orderDao) {
+    private final ServiceDao serviceDao;
+
+    public OrderServiceImpl(OrderDao orderDao, ServiceDao serviceDao) {
         this.orderDao = orderDao;
+        this.serviceDao = serviceDao;
     }
 
     @Override
@@ -72,12 +75,15 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal calculateServicesCost(Order order) {
         BigDecimal servicesCost;
         List<Service> services = order.getServices();
-        if (services.size() != 1) {
+        if (services.size() > 1) {
             servicesCost = services.stream()
+                    .filter(s -> !s.getName().equals(DIAGNOSTIC_SERVICE_NAME))
                     .map(Service::getCost)
-                    .reduce(DIAGNOSTIC_DISCAUNT, BigDecimal::add);
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
         } else {
-            servicesCost = DIAGNOSTIC;
+            servicesCost = serviceDao.findByName(DIAGNOSTIC_SERVICE_NAME)
+                    .map(Service::getCost)
+                    .orElseThrow(() -> new RuntimeException("Service not found"));
         }
         return servicesCost;
     }

@@ -5,6 +5,8 @@ import autoservice.app.model.Service;
 import autoservice.app.model.enums.StatusService;
 import autoservice.app.service.ServiceService;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
@@ -18,14 +20,16 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public BigDecimal getSalaryForMaster(Long id) {
+        List<Service> serviceList = new ArrayList<>();
         BigDecimal reduce = serviceDao.getAllByStatusAndMasterId(StatusService.NOT_PAID.name(), id)
                 .stream()
-                .map(s -> {
+                .peek(s -> {
                     s.setStatus(StatusService.PAID);
-                    return serviceDao.save(s);
+                    serviceList.add(s);
                 })
                 .map(Service::getCost)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        serviceDao.saveAll(serviceList);
         return reduce.multiply(MASTERS_SALARY);
     }
 

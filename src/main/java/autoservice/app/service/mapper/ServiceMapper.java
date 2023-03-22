@@ -24,6 +24,7 @@ public class ServiceMapper {
         serviceDto.setMasterId(service.getMaster().getId());
         serviceDto.setOrderId(service.getOrder().getId());
         serviceDto.setStatus(service.getStatus());
+        serviceDto.setName(service.getName());
         return serviceDto;
     }
 
@@ -35,6 +36,7 @@ public class ServiceMapper {
                         .ifPresent(service::setOrder);
         masterService.findById(serviceDto.getMasterId())
                 .ifPresent(service::setMaster);
+        service.setName(serviceDto.getName());
         return service;
     }
 }

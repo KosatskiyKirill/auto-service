@@ -9,6 +9,7 @@ public class ServiceResponseDto {
     private Long masterId;
     private BigDecimal cost;
     private StatusService status;
+    private String name;
 
     public Long getId() {
         return id;
@@ -48,5 +49,13 @@ public class ServiceResponseDto {
 
     public void setStatus(StatusService status) {
         this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

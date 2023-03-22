@@ -1,6 +1,7 @@
 package autoservice.app.model;
 
 import autoservice.app.model.enums.StatusService;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,6 +19,8 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "name")
+    private String name;
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -34,6 +37,14 @@ public class Service {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Order getOrder() {
